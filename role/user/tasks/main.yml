@@ -1,0 +1,22 @@
+---
+- name: Add users | create users, shell, home dirs
+  user: "name={{ item.name }}
+          password={{ item.password }}
+          shell=/bin/bash
+          createhome=yes
+          comment='created with ansible'"
+  with_items: '{{ users }}'
+
+- name: Sudoers | update sudoers file
+  lineinfile: "dest=/etc/sudoers
+      insertafter=EOF
+      line='{{ item.name }} ALL=(ALL) NOPASSWD: ALL'
+      regexp='^{{ item.name }} .*'
+      state=present"
+  when: 'item.use_sudo == true'
+  with_items: '{{ users }}'
+
+- name: Setup | authorized key upload
+  authorized_key: "user={{ item.name }} key={{ item.key }}"
+  when: 'item.key is defined'
+  with_items: '{{ users }}'

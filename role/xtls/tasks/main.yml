@@ -1,0 +1,40 @@
+---
+- name: Clone a github repository
+  git:
+    repo: https://github.com/MHSanaei/3x-ui
+    dest: /opt/3x-ui
+    clone: yes
+    update: yes
+
+- name: get new tags from remote
+  shell: "git fetch --tags"
+  args:
+    chdir: "/opt/3x-ui"
+
+- name: get latest tag name
+  shell: "git describe --tags `git rev-list --tags --max-count=1`"
+  args:
+    chdir: "/opt/3x-ui"
+  register: latest_tag
+
+- name: git checkout
+  ansible.builtin.git:
+    repo: https://github.com/MHSanaei/3x-ui
+    dest: /opt/3x-ui
+    version: '{{ latest_tag.stdout }}'
+
+- name: create and start services
+  community.docker.docker_compose:
+    project_src: /opt/3x-ui
+  register: output
+
+- name: show results
+  ansible.builtin.debug:
+    var: output
+
+- name: copy data to local machine
+  fetch:
+    src: /opt/3x-ui/db/3x-ui.db
+    dest: /tmp/
+  tags:
+    - backup

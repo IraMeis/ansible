@@ -1,0 +1,60 @@
+xtls_single_host_dev:
+  hosts:
+    local-01:
+
+      ansible_host: # 192.168.xxx.yyy
+      ansible_port: # 22
+      ansible_become: # true
+
+###
+### user role | add users, ssh keys, grant sudo
+###
+      users:
+#        [
+#          {
+#            name: username,
+#            password: password hash,
+#            use_sudo: true | false,
+#            key: ssh pub key,
+#          },
+#        ]
+
+###
+### iptables role | close everything, accept only specified below
+###
+      iptables:
+        input:
+          accept:
+#           [
+#             {
+#              port: 22,
+#              protocol: tcp,
+#             },
+#             {
+#              port: 443,
+#              protocol: tcp,
+#             },
+#           ]
+
+
+###
+### nginx role | create virtualhosts
+###
+      vhosts:
+#       [
+#        {
+#          host: 127.0.0.1,
+#          port: 55201,
+#          server_name: api1.example.com,
+#          short_name: api1,
+#          root_dir: /var/www/api1/,
+#          ssl_cert_path: /etc/letsencrypt/live/api1.example.com/fullchain.pem,
+#          ssl_key_path: /etc/letsencrypt/live/api1.example.com/privkey.pem,
+#          enabled: true,
+#        }
+#       ]
+
+
+dev:
+  children:
+    xtls_single_host_dev:

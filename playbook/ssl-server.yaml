@@ -1,0 +1,6 @@
+- name: ssl server
+  hosts: all
+
+  roles:
+    - certificates
+    - nginx

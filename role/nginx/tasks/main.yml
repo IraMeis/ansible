@@ -1,0 +1,33 @@
+---
+- name: Install Nginx Web Server
+  apt:
+    name=nginx
+    state=latest
+  notify:
+    - start-nginx
+  tags:
+    - install-packages
+
+- name: Add subdomains
+  template:
+    src=templates/ssl-vhost.conf
+    dest=/etc/nginx/sites-available/{{ item.short_name }}.conf
+  with_items: '{{ vhosts }}'
+  when: 'vhosts is defined'
+
+- name: Enable subdomains
+  file:
+    src: /etc/nginx/sites-available/{{ item.short_name }}.conf
+    dest: /etc/nginx/sites-enabled/{{ item.short_name }}.conf
+    state: link
+  when: 'vhosts is defined and item.enabled == true'
+  with_items: '{{ vhosts }}'
+  notify:
+    - restart-nginx
+
+- name: Replace nginx.conf
+  template:
+    src=templates/nginx.conf
+    dest=/etc/nginx/nginx.conf
+  notify:
+    - restart-nginx

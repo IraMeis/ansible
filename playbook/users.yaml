@@ -1,0 +1,5 @@
+- name: manage vm users
+  hosts: all
+
+  roles:
+    - user

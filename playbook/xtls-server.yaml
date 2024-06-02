@@ -1,0 +1,22 @@
+- name: xtls server
+  hosts: all
+
+  roles:
+    # init
+    - role: user
+      tags: init
+
+    - role: sshd
+      tags: init
+
+    - role: iptables
+      tags: init, firewall
+
+    # services
+    - role: docker
+
+    - role: certificates
+
+    - role: nginx
+
+    - role: xtls

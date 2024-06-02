@@ -1,0 +1,5 @@
+- name: sshd configuration
+  hosts: all
+
+  roles:
+    - sshd
